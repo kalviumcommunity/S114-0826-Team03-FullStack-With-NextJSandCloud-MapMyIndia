@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
+import "./Driver";
 
 export type VehicleStatus =
   | "MOVING"
