@@ -1,6 +1,6 @@
-import mongoose, { Document, Schema, Types, Model } from 'mongoose';
+import mongoose, { Document, Schema, Types, Model } from "mongoose";
 
-export type VehicleStatus = 'MOVING' | 'IDLE' | 'STOPPED' | 'OFFLINE';
+export type VehicleStatus = "MOVING" | "IDLE" | "STOPPED" | "OFFLINE";
 
 export interface IVehicle extends Document {
   vehicleNumber: string;
@@ -29,7 +29,7 @@ const vehicleSchema = new Schema<IVehicle>(
     },
     driverId: {
       type: Schema.Types.ObjectId,
-      ref: 'Driver',
+      ref: "Driver",
       required: false,
       index: true,
     },
@@ -40,8 +40,8 @@ const vehicleSchema = new Schema<IVehicle>(
     },
     status: {
       type: String,
-      enum: ['MOVING', 'IDLE', 'STOPPED', 'OFFLINE'],
-      default: 'OFFLINE',
+      enum: ["MOVING", "IDLE", "STOPPED", "OFFLINE"],
+      default: "OFFLINE",
       index: true,
     },
     fuel: {
@@ -94,12 +94,11 @@ const vehicleSchema = new Schema<IVehicle>(
   }
 );
 
-// 🚀 Lane 1 Performance Indexes
+// Performance Indexes for Lane 1
 vehicleSchema.index({ status: 1, lastUpdated: -1 });
 vehicleSchema.index({ vehicleNumber: 1 });
-vehicleSchema.index({ vehicleNumber: 'text', driverName: 'text' } as any);
 
 const Vehicle: Model<IVehicle> =
-  mongoose.models.Vehicle || mongoose.model<IVehicle>('Vehicle', vehicleSchema);
+  mongoose.models.Vehicle || mongoose.model<IVehicle>("Vehicle", vehicleSchema);
 
 export default Vehicle;
