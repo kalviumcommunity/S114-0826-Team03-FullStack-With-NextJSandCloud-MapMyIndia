@@ -6,11 +6,12 @@
   "directories": {
     "test": "tests"
   },
-  "scripts": {
-    "dev": "nodemon src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
-  },
+ "scripts": {
+  "dev": "tsx watch src/server.ts",
+  "build": "tsc",
+  "start": "node dist/server.js",
+  "seed": "tsx src/seed/seed.ts"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
