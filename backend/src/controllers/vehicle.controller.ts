@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import {
   getVehicleById,
+  getVehicleStats,
   getVehicles,
 } from "../services/vehicle.service";
 import {
   sendError,
   sendSuccess,
-  sendSuccessWithPagination,
 } from "../utils/response";
 
 export const getVehiclesController = async (
@@ -15,17 +15,15 @@ export const getVehiclesController = async (
 ) => {
   try {
     const result = await getVehicles({
-      page: req.query.page as string,
+      cursor: req.query.cursor as string,
       limit: req.query.limit as string,
       search: req.query.search as string,
       status: req.query.status as string,
+      sortBy: req.query.sortBy as string,
+      sortOrder: req.query.sortOrder as string,
     });
 
-    return sendSuccessWithPagination(
-      res,
-      result.vehicles,
-      result.pagination
-    );
+    return sendSuccess(res, result);
   } catch (error) {
     return sendError(
       res,
@@ -46,7 +44,11 @@ export const getVehicleController = async (
     );
 
     if (!vehicle) {
-      return sendError(res, "Vehicle not found", 404);
+      return sendError(
+        res,
+        "Vehicle not found",
+        404
+      );
     }
 
     return sendSuccess(res, vehicle);
@@ -56,10 +58,36 @@ export const getVehicleController = async (
         ? error.message
         : "Failed to fetch vehicle";
 
-    if (message.includes("Cast to ObjectId failed")) {
-      return sendError(res, "Invalid vehicle ID", 400);
+    if (
+      message.includes(
+        "Cast to ObjectId failed"
+      )
+    ) {
+      return sendError(
+        res,
+        "Invalid vehicle ID",
+        400
+      );
     }
 
     return sendError(res, message);
+  }
+};
+
+export const getVehicleStatsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const stats = await getVehicleStats();
+
+    return sendSuccess(res, stats);
+  } catch (error) {
+    return sendError(
+      res,
+      error instanceof Error
+        ? error.message
+        : "Failed to fetch vehicle statistics"
+    );
   }
 };

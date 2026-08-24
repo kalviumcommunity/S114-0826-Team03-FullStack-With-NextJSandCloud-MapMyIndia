@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types, Model } from "mongoose";
-
+import "./Driver";
 export type VehicleStatus = "MOVING" | "IDLE" | "STOPPED" | "OFFLINE";
 
 export interface IVehicle extends Document {
