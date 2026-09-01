@@ -1,26 +1,179 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #020b12;
+  --foreground: #d9f7ff;
+
+  --panel: #061521;
+  --panel-light: #0a1d2b;
+  --panel-hover: #0d2637;
+
+  --border: #12384a;
+  --border-bright: #00d9ff;
+
+  --cyan: #00d9ff;
+  --cyan-dark: #008ca8;
+
+  --blue: #1677ff;
+  --green: #00e6a0;
+  --yellow: #ffd600;
+  --red: #ff3b4e;
+
+  --muted: #6f8c9b;
+  --text-secondary: #9db5c2;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-panel: var(--panel);
+  --color-panel-light: var(--panel-light);
+  --color-panel-hover: var(--panel-hover);
+
+  --color-border: var(--border);
+  --color-border-bright: var(--border-bright);
+
+  --color-cyan: var(--cyan);
+  --color-blue: var(--blue);
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --color-red: var(--red);
+
+  --color-muted: var(--muted);
+  --color-text-secondary: var(--text-secondary);
+
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas,
+    "Liberation Mono", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
 }
 
 body {
-  background: var(--background);
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(0, 217, 255, 0.05),
+      transparent 40%
+    ),
+    var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(0, 217, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020b12;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #164052;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-dark);
+}
+
+/* Futuristic panel */
+
+.map-panel {
+  background: rgba(6, 21, 33, 0.92);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 0 0 1px rgba(0, 217, 255, 0.02),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.glow-cyan {
+  box-shadow:
+    0 0 10px rgba(0, 217, 255, 0.25),
+    inset 0 0 10px rgba(0, 217, 255, 0.04);
+}
+
+.text-glow {
+  text-shadow: 0 0 12px rgba(0, 217, 255, 0.55);
+}
+
+/* Status indicators */
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-moving {
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(0, 230, 160, 0.8);
+}
+
+.status-idle {
+  background: var(--yellow);
+  box-shadow: 0 0 8px rgba(255, 214, 0, 0.65);
+}
+
+.status-stopped {
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(255, 59, 78, 0.65);
+}
+
+.status-offline {
+  background: #667985;
+}
+
+/* Subtle scan-line effect */
+
+.scan-lines {
+  background-image: linear-gradient(
+    rgba(0, 217, 255, 0.018) 1px,
+    transparent 1px
+  );
+  background-size: 100% 4px;
+}
+
+/* Map grid */
+
+.map-grid {
+  background-image:
+    linear-gradient(
+      rgba(0, 217, 255, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 217, 255, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 50px 50px;
 }

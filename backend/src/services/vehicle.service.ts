@@ -1,23 +1,31 @@
 import Vehicle from "../models/Vehicle";
-import { getPagination } from "../utils/pagination";
+import mongoose from "mongoose";
 
 interface GetVehiclesParams {
-  page?: string;
+  cursor?: string;
   limit?: string;
   search?: string;
   status?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export const getVehicles = async ({
-  page,
+  cursor,
   limit,
   search,
   status,
+  sortBy,
+  sortOrder,
 }: GetVehiclesParams) => {
-  const pagination = getPagination(page, limit);
+  const parsedLimit = Math.min(
+    Math.max(Number(limit) || 20, 1),
+    100
+  );
 
   const filter: Record<string, unknown> = {};
 
+  // Search by vehicle number
   if (search) {
     filter.vehicleNumber = {
       $regex: search,
@@ -25,37 +33,117 @@ export const getVehicles = async ({
     };
   }
 
-  if (status) {
+  // Filter by vehicle status
+  if (status && status !== "ALL") {
     filter.status = status;
   }
 
-  const [vehicles, total] = await Promise.all([
-    Vehicle.find(filter)
-      .populate("driverId", "name phone licenseNumber status")
-      .sort({ vehicleNumber: 1 })
-      .skip(pagination.skip)
-      .limit(pagination.limit)
-      .lean(),
+  // Cursor pagination
+  // Cursor pagination
+  if (cursor) {
+    if (!mongoose.Types.ObjectId.isValid(cursor)) {
+      throw new Error("Invalid cursor");
+    }
 
-    Vehicle.countDocuments(filter),
-  ]);
+    filter._id = {
+      $gt: new mongoose.Types.ObjectId(cursor),
+    };
+  }
+
+  const sortField =
+    sortBy === "speed"
+      ? "speed"
+      : sortBy === "vehicleNumber"
+        ? "vehicleNumber"
+        : "lastUpdated";
+
+  const sortDirection =
+    sortOrder === "asc" ? 1 : -1;
+
+  const vehicles = await Vehicle.find(filter)
+    .populate(
+      "driverId",
+      "name phone licenseNumber status"
+    )
+    .sort({
+      [sortField]: sortDirection,
+      _id: 1,
+    })
+    .limit(parsedLimit + 1)
+    .lean();
+
+  const hasNextPage = vehicles.length > parsedLimit;
+
+  if (hasNextPage) {
+    vehicles.pop();
+  }
+
+  const nextCursor =
+    hasNextPage && vehicles.length > 0
+      ? vehicles[vehicles.length - 1]._id.toString()
+      : null;
 
   return {
     vehicles,
     pagination: {
-      page: pagination.page,
-      limit: pagination.limit,
-      total,
-      totalPages: Math.ceil(total / pagination.limit),
-      hasNextPage:
-        pagination.page * pagination.limit < total,
-      hasPreviousPage: pagination.page > 1,
+      nextCursor,
+      hasNextPage,
+      limit: parsedLimit,
+      totalReturned: vehicles.length,
     },
   };
 };
 
-export const getVehicleById = async (vehicleId: string) => {
+export const getVehicleById = async (
+  vehicleId: string
+) => {
   return Vehicle.findById(vehicleId)
-    .populate("driverId", "name phone licenseNumber status")
+    .populate(
+      "driverId",
+      "name phone licenseNumber status"
+    )
     .lean();
+};
+
+export const getVehicleStats = async () => {
+  const stats = await Vehicle.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const result = {
+    total: 0,
+    moving: 0,
+    idle: 0,
+    stopped: 0,
+    offline: 0,
+  };
+
+  for (const stat of stats) {
+    result.total += stat.count;
+
+    switch (stat._id) {
+      case "MOVING":
+        result.moving = stat.count;
+        break;
+
+      case "IDLE":
+        result.idle = stat.count;
+        break;
+
+      case "STOPPED":
+        result.stopped = stat.count;
+        break;
+
+      case "OFFLINE":
+        result.offline = stat.count;
+        break;
+    }
+  }
+
+  return result;
 };
