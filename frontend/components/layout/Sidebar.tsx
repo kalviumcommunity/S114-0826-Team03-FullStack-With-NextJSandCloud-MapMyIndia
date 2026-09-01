@@ -10,11 +10,6 @@ const navigation = [
     icon: "▦",
   },
   {
-    label: "Live Tracking",
-    href: "/tracking",
-    icon: "⌖",
-  },
-  {
     label: "Vehicles",
     href: "/vehicles",
     icon: "▱",
@@ -25,20 +20,14 @@ const navigation = [
     icon: "♙",
   },
   {
-    label: "Alerts",
-    href: "/alerts",
-    icon: "♢",
-    badge: 15,
+    label: "Trips",
+    href: "/trips",
+    icon: "⇄",
   },
   {
     label: "Geofences",
     href: "/geofences",
     icon: "⌾",
-  },
-  {
-    label: "Trips",
-    href: "/trips",
-    icon: "⇄",
   },
   {
     label: "Maintenance",

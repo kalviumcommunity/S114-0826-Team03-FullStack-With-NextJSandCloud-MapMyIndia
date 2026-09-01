@@ -39,6 +39,7 @@ export const getVehicles = async ({
   }
 
   // Cursor pagination
+  // Cursor pagination
   if (cursor) {
     if (!mongoose.Types.ObjectId.isValid(cursor)) {
       throw new Error("Invalid cursor");

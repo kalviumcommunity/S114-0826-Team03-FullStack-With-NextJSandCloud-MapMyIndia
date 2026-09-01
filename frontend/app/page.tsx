@@ -17,6 +17,7 @@ export default function Home() {
     <div className="h-full overflow-auto bg-[#020b12]">
       <div className="mx-auto max-w-[1800px] p-4 lg:p-5">
         {/* Page heading */}
+
         <div className="mb-5 flex items-end justify-between">
           <div>
             <p className="text-[9px] font-semibold tracking-[0.25em] text-cyan">
@@ -42,13 +43,18 @@ export default function Home() {
         </div>
 
         {/* Fleet stats */}
+
         <FleetStats />
 
         {/* Main dashboard */}
+
         <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
           {/* Left side */}
+
           <div className="min-w-0 space-y-4">
-            <LiveMap />
+            <LiveMap
+              onVehicleSelect={setSelectedVehicle}
+            />
 
             <div className="h-[520px]">
               <VehicleRoster
@@ -58,6 +64,7 @@ export default function Home() {
           </div>
 
           {/* Right side */}
+
           <div className="min-w-0">
             <VehicleDetails
               vehicle={selectedVehicle}
