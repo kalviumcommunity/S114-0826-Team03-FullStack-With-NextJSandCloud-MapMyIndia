@@ -32,18 +32,20 @@ export interface VehicleQueryParams {
 }
 
 export interface VehicleListApiResponse {
-    success: boolean;
-    data?: {
-        vehicles: IVehicleDocument[];
-        pagination: {
-            nextCursor: string | null;
-            hasNextPage: boolean;
-            limit: number;
-            totalReturned: number;
-        };
+  success: boolean;
+
+  data?: {
+    vehicles: IVehicleDocument[];
+    pagination: {
+      nextCursor: string | null;
+      hasNextPage: boolean;
+      limit: number;
+      totalReturned: number;
     };
-    error?: {
-        code: string;
-        message: string;
-    };
+  };
+
+  error?: {
+    code: string;
+    message: string;
+  };
 }
